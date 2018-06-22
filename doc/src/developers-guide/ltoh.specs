@@ -107,13 +107,13 @@ htmlfile_spec := $BASE.html
 # End specifications for standard Latex command
 #
 
-:comm   :\omnetpp:OMNeT++::
-:comm   :\omnest:OMNEST::
+:comm   :\omnetpp:|omnetpp|::
+:comm   :\omnest:|omnest|::
 :comm   :\new:<sup><b>[New!]</b></sup>::
 :comm   :\changed:[Changed!]::
-:{}     :\ttt:<tt>:</tt>:
-:{}     :\tbf:<b>:</b>:
-:{}     :\mathit:<i>:</i>:
+:{}     :\ttt:``:``:
+:{}     :\tbf:**:**:
+:{}     :\mathit:*:*:
 :{}     :\tilde:&:tilde;:
 :{}     :\label:<a name=":"></a>:
 :{}     :\ref:<a href="#:">[click]</a>:
@@ -146,8 +146,8 @@ htmlfile_spec := $BASE.html
 :comm   :\neq:!=::
 :comm   :\c{S}:S::
 :comm   :\u{g}:g::
-:comm   :\verb!(.*?)!:<tt>$1</tt>::
-:comm   :\textrm(\[.*?\])?{(.*?)}:<i>$2</i>::
+:comm   :\verb!(.*?)!:``$1``::
+:comm   :\textrm(\[.*?\])?{(.*?)}:*$2*::
 :comm   :\fpar(\[.*?\])?{(.*?)}:<tt>$2</tt>::
 :comm   :\fgate(\[.*?\])?{(.*?)}:<tt>$2</tt>::
 :comm   :\fsignal(\[.*?\])?{(.*?)}:<tt>$2</tt>::

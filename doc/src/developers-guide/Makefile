@@ -8,7 +8,7 @@ TITLE="INET __VERSION__ Developer's Guide"
 DOCNAME=inet-developers-guide
 TEXMAIN=$(DOCNAME).tex
 HTMLTEMPLATE=inet-developers-guide.thtml
-MDTEMPLATE=inet-developers-guide.tmd
+RSTTEMPLATE=inet-developers-guide.rst
 VERSION=4.0
 HTMLDIR=../../developers-guide
 PDFDIR=../..
@@ -57,10 +57,10 @@ html : $(ALLTEX) $(SVGPICS) $(HTMLTEMPLATE) $(PREPHTML) $(LTOH) ltoh.specs
 	cp figures/*.png $(HTMLDIR)
 	@if grep 'Unknown LaTeX command' $(DOCNAME).html; then echo 'Error: LaTeX commands missing from ltoh.specs! (see lines above)'; exit 1; fi
 
-md : $(ALLTEX) $(SVGPICS) $(MDTEMPLATE) $(PREPHTML) $(LTOH) ltoh.specs
+rst : $(ALLTEX) $(SVGPICS) $(RSTTEMPLATE) $(PREPHTML) $(LTOH) ltoh.specs
 	CHAPTERS=$$(grep '\include{' $(TEXMAIN) | sed 's/\\include{//;s/}/.tex/' | sed '/^title\.tex/d') && cat $$CHAPTERS > _allinone_.tex
 	$(LTOH) _allinone_.tex
-	$(PREPHTML) --ext md --split --template $(MDTEMPLATE) --productversion $(VERSION) --product $(PRODUCT) --title $(TITLE) --outfilenamebase index _allinone_.html
+	$(PREPHTML) --ext rst --split --template $(RSTTEMPLATE) --productversion $(VERSION) --product $(PRODUCT) --title $(TITLE) --outfilenamebase index _allinone_.html
 	rm _allinone_.tex _allinone_.html
 	mkdir -p $(MDDIR)
 	cp *.md lib/* $(MDDIR)
