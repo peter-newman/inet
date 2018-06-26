@@ -35,9 +35,10 @@ class INET_API RadioCanvasVisualizer : public RadioVisualizerBase
         IndexedImageFigure *radioModeFigure = nullptr;
         IndexedImageFigure *receptionStateFigure = nullptr;
         IndexedImageFigure *transmissionStateFigure = nullptr;
+        cPolygonFigure *antennaLobeFigure = nullptr;
 
       public:
-        RadioCanvasVisualization(NetworkNodeCanvasVisualization *networkNodeVisualization, IndexedImageFigure *radioModeFigure, IndexedImageFigure *receptionStateFigure, IndexedImageFigure *transmissionStateFigure, const int radioModuleId);
+        RadioCanvasVisualization(NetworkNodeCanvasVisualization *networkNodeVisualization, IndexedImageFigure *radioModeFigure, IndexedImageFigure *receptionStateFigure, IndexedImageFigure *transmissionStateFigure, cPolygonFigure *antennaLobeFigure, const int radioModuleId);
         virtual ~RadioCanvasVisualization();
     };
 
