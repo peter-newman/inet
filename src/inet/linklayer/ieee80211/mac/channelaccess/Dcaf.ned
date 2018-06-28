@@ -19,6 +19,9 @@ package inet.linklayer.ieee80211.mac.channelaccess;
 
 import inet.linklayer.ieee80211.mac.contention.Contention;
 
+//
+// TODO
+//
 module Dcaf
 {
     parameters:
