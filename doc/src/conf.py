@@ -75,7 +75,9 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
-exclude_patterns = ['_build', '_deploy', 'Thumbs.db', '.DS_Store', '**/_docs']
+exclude_patterns = ['_build', '_deploy', 'Thumbs.db', '.DS_Store', '**/_docs', 'global.rst',
+  'users-guide/**', 'tutorials/**', 'showcases/**',
+]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -227,6 +229,8 @@ texinfo_documents = [
 #}
 
 # -- Extension configuration -------------------------------------------------
+rst_prolog = open('global.rst', 'r').read()
+
 todo_include_todos = True
 todo_emit_warnings = False
 
@@ -248,6 +252,54 @@ def opp_preprocess(app, docname, source):
     )
     source[0] = rendered
 
+###########################################################################
+# pygments
+from pygments.lexer import RegexLexer, bygroups, words
+from pygments.token import Name, Keyword, Comment, Text, Operator, String
+from sphinx.highlighting import lexers
+
+# keywords not yet fully working. Model it after the C lexer in pygments:
+class MsgLexer(RegexLexer):
+    name = 'msg'
+    filenames = ['*.msg']
+
+    tokens = {
+        'root': [
+            (r'extends', Keyword),
+            (r'\w+', Keyword),
+            (r'[^/]+', Text),
+            (r'/\*', Comment.Multiline, 'comment'),
+            (r'//.*?$', Comment.Singleline),
+            (r'/', Text)
+        ],
+        'comment': [
+            (r'[^*/]', Comment.Multiline),
+            (r'/\*', Comment.Multiline, '#push'),
+            (r'\*/', Comment.Multiline, '#pop'),
+            (r'[*/]', Comment.Multiline)
+        ],
+    }
+
+lexers['msg'] = MsgLexer(startinline=True)
+
+class IniLexer(RegexLexer):
+    name = 'OMNeT++ Ini File'
+    aliases = ['ini']
+    filenames = ['*.ini']
+
+    tokens = {
+        'root': [
+            (r'\s+', Text),
+            (r';.*?$', Comment),
+            (r'\[.*?\]$', Keyword),
+            (r'(.*?)(\s*)(=)(\s*)(.*?)$',
+             bygroups(Name.Attribute, Text, Operator, Text, String))
+        ],
+    }
+
+lexers['OppIni'] = IniLexer(startinline=True)
+
+#######################################################################
 # -- setup the customizations
 import tools.video
 
