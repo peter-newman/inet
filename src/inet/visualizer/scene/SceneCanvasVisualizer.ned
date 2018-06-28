@@ -38,3 +38,4 @@ simple SceneCanvasVisualizer extends SceneVisualizerBase like ISceneVisualizer
         string descriptionFigure = default(""); // if not empty, it should be the name of a text figure; it will display the active configuration's description 
         @class(SceneCanvasVisualizer);
 }
+

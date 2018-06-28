@@ -15,7 +15,6 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-
 package inet.node.ethernet;
 
 import inet.applications.ethernet.EtherAppClient;
@@ -88,3 +87,4 @@ module EtherHost
 
         mac.phys <--> ethg;
 }
+

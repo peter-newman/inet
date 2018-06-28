@@ -66,3 +66,4 @@ module EtherHost2
 
         mac.phys <--> ethg;
 }
+
