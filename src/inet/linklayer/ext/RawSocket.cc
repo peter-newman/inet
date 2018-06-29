@@ -44,8 +44,13 @@ void RawSocket::initialize(int stage)
     cSimpleModule::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
         device = par("device");
-        // TODO: fd = socket(AF_PACKET, SOCK_RAW, IPPROTO_RAW);
-        fd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
+        const char *protocol = par("protocol");
+        if (!strcmp(protocol, "ipv4"))
+            fd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
+        else if (!strcmp(protocol, "ethernetMac"))
+            fd = socket(AF_PACKET, SOCK_RAW, IPPROTO_RAW);
+        else
+            throw cRuntimeError("Unknown protocol");
         if (fd == INVALID_SOCKET)
             throw cRuntimeError("RawSocket interface: Root privileges needed");
         const int32 on = 1;
