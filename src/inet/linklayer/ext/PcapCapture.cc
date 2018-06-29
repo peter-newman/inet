@@ -25,6 +25,8 @@
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/packet/chunk/BytesChunk.h"
 #include "inet/common/packet/Packet.h"
+#include "inet/common/ProtocolTag_m.h"
+#include "inet/linklayer/common/InterfaceTag_m.h"
 #include "inet/linklayer/ext/PcapCapture.h"
 #include "inet/networklayer/common/InterfaceEntry.h"
 
@@ -63,8 +65,8 @@ void PcapCapture::initialize(int stage)
     if (stage == INITSTAGE_LOCAL) {
         device = par("device");
         realTimeScheduler = dynamic_cast<RealTimeScheduler *>(getSimulation()->getScheduler());
-        realTimeScheduler->addCallback(fd, this);
         openPcap(device, par("filterString"));
+        realTimeScheduler->addCallback(fd, this);
         WATCH(numRcvd);
     }
 }
@@ -74,7 +76,6 @@ void PcapCapture::openPcap(const char *device, const char *filter)
     char errbuf[PCAP_ERRBUF_SIZE];
     struct bpf_program fcode;
     pcap_t *pd;
-    int32 datalink;
     if (!device || !filter)
         throw cRuntimeError("arguments must be non-nullptr");
 
@@ -87,7 +88,7 @@ void PcapCapture::openPcap(const char *device, const char *filter)
 
     /* apply the immediate mode to pcap */
     if (pcap_set_immediate_mode(pd, 1) != 0)
-            throw cRuntimeError("Cannot set immediate mode to pcap device");
+        throw cRuntimeError("Cannot set immediate mode to pcap device");
 
     if (pcap_activate(pd) != 0)
         throw cRuntimeError("Cannot activate pcap device");
@@ -110,7 +111,9 @@ void PcapCapture::openPcap(const char *device, const char *filter)
 
     this->pd = pd;
 #ifdef __linux__
-    this->fd = pcap_get_selectable_fd(pd);
+    fd = pcap_get_selectable_fd(pd);
+    if (fd == -1)
+        throw cRuntimeError("Cannot get pcap fd");
 #endif
 
     EV << "Opened pcap device " << device << " with filter " << filter << " and datalink " << datalink << ".\n";
@@ -120,6 +123,11 @@ void PcapCapture::handleMessage(cMessage *msg)
 {
     Packet *packet = check_and_cast<Packet *>(msg);
     if (msg->isSelfMessage()) {
+        packet->addTagIfAbsent<InterfaceInd>()->setInterfaceId(check_and_cast<InterfaceEntry*>(getParentModule())->getInterfaceId());
+        if (datalink == DLT_EN10MB) {
+            packet->addTagIfAbsent<DispatchProtocolReq>()->setProtocol(&Protocol::ethernetMac);
+            packet->addTagIfAbsent<PacketProtocolTag>()->setProtocol(&Protocol::ethernetMac);
+        }
         send(packet, "upperLayerOut");
         numRcvd++;
     }
@@ -130,7 +138,7 @@ void PcapCapture::handleMessage(cMessage *msg)
 void PcapCapture::refreshDisplay() const
 {
     char buf[80];
-    sprintf(buf, "pcap device: %s\nrcv:%d", device, numRcvd);
+    sprintf(buf, "device: %s\nrcv:%d", device, numRcvd);
     getDisplayString().setTagArg("t", 0, buf);
 }
 

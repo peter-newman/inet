@@ -43,6 +43,7 @@ class INET_API PcapCapture : public cSimpleModule, public RealTimeScheduler::ICa
     // state
     pcap_t *pd = nullptr;
     int fd = -1;
+    int datalink = -1;
 
   protected:
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
