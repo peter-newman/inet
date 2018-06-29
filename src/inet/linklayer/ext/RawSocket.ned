@@ -21,6 +21,7 @@ simple RawSocket
 {
     parameters:
         string device;
+        string protocol @enum("ipv4", "ethernetMac") = default("ipv4");
         @display("i=block/rxtx");
         @signal[packetReceivedFromUpper](type=cPacket);
         @statistic[packetReceivedFromUpper](title="packets received from higher layer"; source=packetReceivedFromUpper; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);

@@ -47,7 +47,7 @@ module ExtInterface like IExternalInterface
         inputHook[numInputHooks]: <default("Nop")> like IHook if numInputHooks>0 {
             @display("p=177,33");
         }
-        encapDecap: HackEncapDecap {
+        encapDecap: <default("HackEncapDecap")> like IEncapDecap if typename != "" {
             parameters:
                 @display("p=150,100");
         }
@@ -76,8 +76,35 @@ module ExtInterface like IExternalInterface
             inputHook[i].out --> inputHook[i+1].in;
         }
         inputHook[numInputHooks-1].out --> { @display("m=n"); } --> upperLayerOut if numInputHooks > 0;
-        
+
         encapDecap.lowerLayerOut --> rawSocket.upperLayerIn;
         encapDecap.lowerLayerIn <-- pcapCapture.upperLayerOut;
+}
+
+
+
+module ExtInterface2 like IExternalInterface
+{
+    parameters:
+        @class(ExtInterface);
+        @display("i=block/ifcard;bgl=53");
+        string interfaceTableModule;   // path to the InterfaceTable module
+        int mtu @unit(B) = default(4470B);
+        *.interfaceTableModule = default(absPath(interfaceTableModule));
+    gates:
+        input upperLayerIn;
+        output upperLayerOut;
+    submodules:
+        rawSocket: RawSocket {
+            parameters:
+                @display("p=100,200");
+        }
+        pcapCapture: PcapCapture {
+            parameters:
+                @display("p=200,200");
+        }
+    connections:
+        upperLayerIn --> { @display("m=n"); } --> rawSocket.upperLayerIn;
+        upperLayerOut <-- { @display("m=n"); } <-- pcapCapture.upperLayerOut;
 }
 
