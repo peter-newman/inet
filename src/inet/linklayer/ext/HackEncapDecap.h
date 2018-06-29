@@ -18,7 +18,7 @@
 #ifndef __INET_HACKENCAPDECAP_H
 #define __INET_HACKENCAPDECAP_H
 
-#include "inet/common/INETDefs.h"
+#include "inet/common/packet/Packet.h"
 
 namespace inet {
 
@@ -29,6 +29,9 @@ namespace inet {
  */
 class INET_API HackEncapDecap : public cSimpleModule
 {
+  protected:
+    B headerLength = B(-1);
+
   protected:
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
     virtual void initialize(int stage) override;
