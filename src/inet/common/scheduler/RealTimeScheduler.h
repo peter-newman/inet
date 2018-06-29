@@ -41,6 +41,7 @@ class INET_API RealTimeScheduler : public cScheduler
         ICallback *callback = nullptr;
       public:
         Entry(int fd, ICallback *callback) : fd(fd), callback(callback) {}
+        Entry(const Entry& other) : fd(other.fd), callback(other.callback) {}
     };
 
     static int64_t baseTime; // in microseconds, as returned by opp_get_monotonic_clock_usecs()

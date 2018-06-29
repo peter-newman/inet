@@ -30,9 +30,10 @@ import inet.linklayer.contract.IExternalInterface;
 module ExtInterface like IExternalInterface
 {
     parameters:
-        @class(InterfaceEntry);
+        @class(ExtInterface);
         @display("i=block/ifcard;bgl=53");
-        string interfaceTableModule;   // The path to the InterfaceTable module
+        string interfaceTableModule;   // path to the InterfaceTable module
+        int mtu @unit(B) = default(4470B);
         int numOutputHooks = default(0);
         int numInputHooks = default(0);
         *.interfaceTableModule = default(absPath(interfaceTableModule));
