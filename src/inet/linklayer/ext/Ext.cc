@@ -29,6 +29,7 @@
 
 #include <net/if.h>
 
+#include "inet/common/Simsignals.h"
 #include "inet/common/INETUtils.h"
 #include "inet/common/ModuleAccess.h"
 #include "inet/common/ProtocolTag_m.h"
@@ -284,6 +285,7 @@ void Ext::handleMessage(cMessage *msg)
                << packet->getByteLength()
                << " bytes to link layer.\n";
             sendBytes(buffer, packetLength, (struct sockaddr *)&addr, sizeof(struct sockaddr_in));
+            emit(packetSentToLowerSignal, packet);
             numSent++;
             delete packet;
         }
