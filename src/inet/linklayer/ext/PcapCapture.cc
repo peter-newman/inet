@@ -27,6 +27,7 @@
 #include "inet/common/packet/Packet.h"
 #include "inet/common/ProtocolTag_m.h"
 #include "inet/linklayer/common/InterfaceTag_m.h"
+#include "inet/linklayer/ethernet/EtherEncap.h"
 #include "inet/linklayer/ext/PcapCapture.h"
 #include "inet/networklayer/common/InterfaceEntry.h"
 
@@ -127,6 +128,7 @@ void PcapCapture::handleMessage(cMessage *msg)
         if (datalink == DLT_EN10MB) {
             packet->addTagIfAbsent<DispatchProtocolReq>()->setProtocol(&Protocol::ethernetMac);
             packet->addTagIfAbsent<PacketProtocolTag>()->setProtocol(&Protocol::ethernetMac);
+            EtherEncap::addPaddingAndFcs(packet, FCS_COMPUTED);
         }
         send(packet, "upperLayerOut");
         numRcvd++;
