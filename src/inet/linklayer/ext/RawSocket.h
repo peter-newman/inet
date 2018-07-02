@@ -31,6 +31,8 @@ class INET_API RawSocket : public cSimpleModule
 {
   protected:
     const char *device = nullptr;
+    const Protocol *protocol = nullptr;
+    int ifindex = -1;
 
     // statistics
     int numSent = 0;
@@ -38,6 +40,7 @@ class INET_API RawSocket : public cSimpleModule
 
     // state
     int fd = INVALID_SOCKET; // RAW socket ID
+    MacAddress myMacAddress;    // for ethernet devices
 
   protected:
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
