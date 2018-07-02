@@ -180,7 +180,7 @@ bool Icmp::possiblyLocalBroadcast(const Ipv4Address& addr, int interfaceId)
 void Icmp::processICMPMessage(Packet *packet)
 {
     if (!verifyCrc(packet)) {
-        EV_WARN << "incoming ICMP packet has wrong CRC, dropped\n";
+        EV_WARN << "incoming ICMP packet has wrong CRC, dropped\n   " << packet->peekDataAsBytes() << "\n";
         // drop packet
         delete packet;
         return;
