@@ -53,9 +53,9 @@ void RawSocket::initialize(int stage)
             throw cRuntimeError("Unknown protocol");
         if (fd == INVALID_SOCKET)
             throw cRuntimeError("RawSocket interface: Root privileges needed");
-        const int32 on = 1;
-        if (setsockopt(fd, IPPROTO_IP, IP_HDRINCL, (char *)&on, sizeof(on)) < 0)
-            throw cRuntimeError("RawSocket: couldn't set sockopt for raw socket");
+//        const int32 on = 1;
+//        if (setsockopt(fd, IPPROTO_IP, IP_HDRINCL, (char *)&on, sizeof(on)) < 0)
+//            throw cRuntimeError("RawSocket: couldn't set sockopt for raw socket");
         // bind to interface:
         struct ifreq ifr;
         memset(&ifr, 0, sizeof(ifr));
@@ -72,9 +72,9 @@ void RawSocket::initialize(int stage)
 void RawSocket::handleMessage(cMessage *msg)
 {
     Packet *packet = check_and_cast<Packet *>(msg);
-    auto protocol = packet->getTag<PacketProtocolTag>()->getProtocol();
-    if (protocol != &Protocol::ipv4)
-        throw cRuntimeError("ExtInterface accepts ipv4 packets only");
+//    auto protocol = packet->getTag<PacketProtocolTag>()->getProtocol();
+//    if (protocol != &Protocol::ipv4)
+//        throw cRuntimeError("ExtInterface accepts ipv4 packets only");
 
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
