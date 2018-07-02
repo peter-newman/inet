@@ -25,17 +25,17 @@ Register_Serializer(ArpPacket, ArpPacketSerializer);
 
 MacAddress ArpPacketSerializer::readMacAddress(MemoryInputStream& stream, unsigned int size) const
 {
-    b curpos = stream.getPosition();
+//    b curpos = stream.getPosition();
     MacAddress address = stream.readMacAddress();
-    stream.seek(curpos + B(size));
+//    stream.seek(curpos + B(size));
     return address;
 }
 
 Ipv4Address ArpPacketSerializer::readIpv4Address(MemoryInputStream& stream, unsigned int size) const
 {
-    b curpos = stream.getPosition();
+//    b curpos = stream.getPosition();
     Ipv4Address address = stream.readIpv4Address();
-    stream.seek(curpos + B(size));
+//    stream.seek(curpos + B(size));
     return address;
 }
 

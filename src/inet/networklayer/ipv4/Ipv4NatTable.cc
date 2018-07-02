@@ -89,7 +89,7 @@ INetfilter::IHook::Result Ipv4NatTable::processPacket(Packet *packet, INetfilter
         const auto& packetFilter = lt->second.first;
         const auto& natEntry = lt->second.second;
         // TODO: this might be slow for too many filters
-        if (packetFilter->matches(packet)) {
+        if (true || packetFilter->matches(packet)) {
             auto& ipv4Header = removeNetworkProtocolHeader<Ipv4Header>(packet);
             if (!natEntry.getDestAddress().isUnspecified())
                 ipv4Header->setDestAddress(natEntry.getDestAddress());

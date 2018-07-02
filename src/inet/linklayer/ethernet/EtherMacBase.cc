@@ -518,7 +518,7 @@ bool EtherMacBase::dropFrameNotForUs(Packet *packet, const Ptr<const EthernetMac
     // All NON-PAUSE frames must be passed to the upper layer if the interface is
     // in promiscuous mode.
 
-    if (frame->getDest().equals(address))
+    if (!frame->getDest().equals(address))
         return false;
 
     if (frame->getDest().isBroadcast())
