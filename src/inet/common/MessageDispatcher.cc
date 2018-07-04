@@ -40,7 +40,8 @@ void MessageDispatcher::arrived(cMessage *message, cGate *inGate, simtime_t t)
         outGate = handlePacket(check_and_cast<Packet *>(message), inGate);
     else
         outGate = handleMessage(check_and_cast<Message *>(message), inGate);
-    outGate->deliver(message, t);
+    if (outGate)
+        outGate->deliver(message, t);
 }
 
 cGate *MessageDispatcher::handlePacket(Packet *packet, cGate *inGate)
@@ -69,8 +70,11 @@ cGate *MessageDispatcher::handlePacket(Packet *packet, cGate *inGate)
         auto it = serviceToGateIndex.find(Key(protocol->getId(), servicePrimitive));
         if (it != serviceToGateIndex.end())
             return gate("out", it->second);
-        else
-            throw cRuntimeError("handlePacket(): Unknown protocol: id = %d, name = %s", protocol->getId(), protocol->getName());
+        else {
+            EV_ERROR << "handlePacket(): Unknown protocol: id = " << protocol->getId() << ", name = " << protocol->getName() << "\n";
+            return nullptr;
+//            throw cRuntimeError("handlePacket(): Unknown protocol: id = %d, name = %s", protocol->getId(), protocol->getName());
+        }
     }
     auto interfaceReq = packet->findTag<InterfaceReq>();
     if (interfaceReq != nullptr) {
