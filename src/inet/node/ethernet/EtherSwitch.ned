@@ -51,8 +51,7 @@ module EtherSwitch
         eth[*].encap.typename = "EtherEncapDummy";
         eth[*].csmacdSupport = csmacdSupport;
         eth[*].mac.typename = default(csmacdSupport ? "EtherMac" : "EtherMacFullDuplex");
-        ext[*].encapDecap.typename = default("");
-        ext[*].rawSocket.protocol = default("ethernetMac");
+        ext[*].encap.typename = "EtherEncapDummy";
         *.interfaceTableModule = default(absPath(".interfaceTable"));
         *.macTableModule = default(absPath(".macTable"));
     gates:
