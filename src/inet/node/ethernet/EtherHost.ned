@@ -86,5 +86,5 @@ module EtherHost
         llc.lowerLayerOut --> mac.upperLayerIn if !exists(queue);
         mac.upperLayerOut --> llc.lowerLayerIn;
 
-        mac.phys <--> ethg;
+        mac.phys <--> { @display("m=s"); } <--> ethg;
 }

@@ -64,5 +64,5 @@ module EtherHost2
         encap.lowerLayerOut --> mac.upperLayerIn if !exists(queue);
         mac.upperLayerOut --> encap.lowerLayerIn;
 
-        mac.phys <--> ethg;
+        mac.phys <--> { @display("m=s"); } <--> ethg;
 }
