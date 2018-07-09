@@ -3,6 +3,7 @@
 package inet.examples.emulation.tap;
 
 import inet.networklayer.configurator.ipv4.Ipv4NetworkConfigurator;
+import inet.node.emulation.TapHost;
 import inet.node.ethernet.Eth100M;
 import inet.node.ethernet.EtherSwitch;
 import inet.node.inet.Router;
@@ -14,7 +15,7 @@ network TapNetPing
     @display("bgb=400,400");
     submodules:
         host: StandardHost {
-            @display("p=184,181");
+            @display("p=250,181");
         }
         configurator: Ipv4NetworkConfigurator {
             @display("p=76,61");
@@ -22,6 +23,11 @@ network TapNetPing
         visualizer: IntegratedVisualizer {
             @display("p=250,51");
         }
+        tapHost: TapHost {
+            @display("p=95,181");
+        }
+    connections:
+        tapHost.ethg <--> Eth100M <--> host.ethg++;
 }
 
 network TapNetPingSwitch
@@ -29,7 +35,7 @@ network TapNetPingSwitch
     @display("bgb=400,400");
     submodules:
         host: StandardHost {
-            @display("p=184,181");
+            @display("p=272,173");
         }
         configurator: Ipv4NetworkConfigurator {
             @display("p=76,61");
@@ -40,6 +46,10 @@ network TapNetPingSwitch
         switch: EtherSwitch {
             @display("p=182,289");
         }
+        tapHost: TapHost {
+            @display("p=82,173");
+        }
     connections:
         host.ethg++ <--> Eth100M <--> switch.ethg++;
+        tapHost.ethg <--> Eth100M <--> switch.ethg++;
 }
