@@ -136,23 +136,7 @@ Tap::~Tap()
     rtScheduler->removeCallback(fd, this);
 }
 
-void Tap::initializeMacAddress()
-{
-    const char *addrstr = par("address");
-
-    if (!strcmp(addrstr, "auto")) {
-        // assign automatic address
-        macAddress = MacAddress::generateAutoAddress();
-
-        // change module parameter from "auto" to concrete address
-        par("address").setStringValue(macAddress.str().c_str());
-    }
-    else {
-        macAddress.setAddress(addrstr);
-    }
-}
-
-void Tap::initializeIpv4Address()
+void Tap::initializeAddresses()
 {
     int fd;
     struct ifreq ifr;
@@ -165,13 +149,23 @@ void Tap::initializeIpv4Address()
     //Copy the interface name in the ifreq structure
     strncpy(ifr.ifr_name , device.c_str() , IFNAMSIZ-1);
 
-    //get the ip address
+    //get the IPv4 address
     ioctl(fd, SIOCGIFADDR, &ifr);
     ipv4Address = Ipv4Address(inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
 
-    //get the netmask ip
+    //get the IPv4 netmask
     ioctl(fd, SIOCGIFNETMASK, &ifr);
     ipv4Netmask = Ipv4Address(inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+
+    ioctl(fd, SIOCGIFHWADDR, &ifr);
+    macAddress.setAddressBytes((unsigned char *)ifr.ifr_hwaddr.sa_data);
+
+    ioctl(fd, SIOCGIFMTU, &ifr);
+    mtu = ifr.ifr_mtu;
+
+    //TODO get IPv4 multicast addresses
+
+    //TODO get IPv6 addresses
 
     close(fd);
 }
@@ -206,8 +200,7 @@ void Tap::initialize(int stage)
     }
     else if (stage == INITSTAGE_LINK_LAYER) {
         //TODO read real IPv4/IPv6 addresses and MAC address from tap interface and use these values in inet simulation
-        initializeMacAddress();
-        initializeIpv4Address();
+        initializeAddresses();
         registerInterface();
         Ipv4InterfaceData *interfaceData = interfaceEntry->ipv4Data();
         if (interfaceData == nullptr)
@@ -224,7 +217,6 @@ InterfaceEntry *Tap::createInterfaceEntry()
 {
     InterfaceEntry *e = getContainingNicModule(this);
 
-    e->setMtu(par("mtu"));      //TODO get mtu from real interface / or set mtu in real interface
     e->setMulticast(true);      //TODO
     e->setPointToPoint(true);   //TODO
     e->setBroadcast(true);

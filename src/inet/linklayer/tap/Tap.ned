@@ -28,9 +28,7 @@ simple Tap
 {
     parameters:
         string interfaceTableModule;   // The path to the InterfaceTable module
-        int mtu @unit(B) = default(4470B);
         string device;
-        string address = default("auto");   // MAC address
         @display("i=block/rxtx");
 
         @signal[packetSentToUpper](type=cPacket);

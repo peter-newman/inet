@@ -74,8 +74,7 @@ class INET_API Tap : public MacBase, public RealTimeScheduler::ICallback
     virtual void flushQueue() override;
     virtual void clearQueue() override;
     virtual bool isUpperMsg(cMessage *msg) override { return msg->arrivedOn("upperLayerIn"); }
-    void initializeMacAddress();
-    void initializeIpv4Address();
+    void initializeAddresses();
     void encapsulate(Packet *frame);
     void decapsulate(Packet *packet);
 
