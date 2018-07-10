@@ -27,21 +27,23 @@ import inet.networklayer.common.InterfaceTable;
 module TapHost
 {
     parameters:
+        int numTapInterfaces = default(0);  // minimum number of tap interfaces
         @networkNode();
         @labels(node,ethernet-node);
         @display("i=device/pc2");
         *.interfaceTableModule = default(absPath(".interfaceTable"));
     gates:
-        inout ethg @labels(EtherFrame-conn);
+        inout ethg[numTapInterfaces] @labels(EtherFrame-conn) @allowUnconnected;
     submodules:
         interfaceTable: InterfaceTable {
             @display("p=100,200;is=s");
         }
-        tapInterface: TapInterface {
+        tap[sizeof(ethg)]: TapInterface {
             @display("p=200,400;q=txQueue");
         }
     connections:
-        tapInterface.phys <--> { @display("m=s"); } <--> ethg;
+        for i=0..sizeof(ethg)-1 {
+            ethg[i] <--> { @display("m=s"); } <--> tap[i].phys;
+        }
 }
-
 
