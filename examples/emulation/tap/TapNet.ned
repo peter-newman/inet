@@ -10,7 +10,7 @@ import inet.node.inet.Router;
 import inet.node.inet.StandardHost;
 import inet.visualizer.integrated.IntegratedVisualizer;
 
-network TapNetPing
+network TapNet
 {
     @display("bgb=400,400");
     submodules:
@@ -27,10 +27,10 @@ network TapNetPing
             @display("p=95,181");
         }
     connections:
-        tapHost.ethg <--> Eth100M <--> host.ethg++;
+        tapHost.ethg++ <--> Eth100M <--> host.ethg++;
 }
 
-network TapNetPingSwitch
+network TapNetSwitch
 {
     @display("bgb=400,400");
     submodules:
@@ -51,5 +51,5 @@ network TapNetPingSwitch
         }
     connections:
         host.ethg++ <--> Eth100M <--> switch.ethg++;
-        tapHost.ethg <--> Eth100M <--> switch.ethg++;
+        tapHost.ethg++ <--> Eth100M <--> switch.ethg++;
 }
