@@ -27,16 +27,10 @@ package inet.linklayer.tap;
 simple Tap
 {
     parameters:
-        string interfaceTableModule;   // The path to the InterfaceTable module
         string device;
         @display("i=block/rxtx");
-
-        @signal[packetSentToUpper](type=cPacket);
-        @signal[packetReceivedFromUpper](type=cPacket);
-        @statistic[rcvdPkFromHl](title="packets received from higher layer"; source=packetReceivedFromUpper; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
-        @statistic[passedUpPk](title="packets passed to higher layer"; source=packetSentToUpper; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
-
     gates:
-        inout phys @labels(EtherFrame);
+        input lowerLayerIn @labels(EtherFrame);
+        output lowerLayerOut @labels(EtherFrame);
 }
 

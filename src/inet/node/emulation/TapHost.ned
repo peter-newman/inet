@@ -17,7 +17,8 @@
 
 package inet.node.emulation;
 
-import inet.linklayer.tap.TapInterface;
+import inet.linklayer.contract.IEthernetInterface;
+import inet.linklayer.tap.Tap;
 import inet.networklayer.common.InterfaceTable;
 
 
@@ -32,18 +33,25 @@ module TapHost
         @labels(node,ethernet-node);
         @display("i=device/pc2");
         *.interfaceTableModule = default(absPath(".interfaceTable"));
+        eth[*].encap.typename = "EtherEncapDummy";
     gates:
         inout ethg[numTapInterfaces] @labels(EtherFrame-conn) @allowUnconnected;
     submodules:
         interfaceTable: InterfaceTable {
-            @display("p=100,200;is=s");
+            @display("p=76,104;is=s");
         }
-        tap[sizeof(ethg)]: TapInterface {
-            @display("p=200,400;q=txQueue");
+        tap[sizeof(ethg)]: Tap {
+            @display("p=253,104;q=txQueue");
+        }
+        eth[sizeof(ethg)]: <default("EthernetInterface")> like IEthernetInterface {
+            parameters:
+                @display("p=253,240,row,150;q=txQueue");
         }
     connections:
         for i=0..sizeof(ethg)-1 {
-            ethg[i] <--> { @display("m=s"); } <--> tap[i].phys;
+            tap[i].lowerLayerOut --> eth[i].upperLayerIn;
+            tap[i].lowerLayerIn <-- eth[i].upperLayerOut;
+            ethg[i] <--> { @display("m=s"); } <--> eth[i].phys;
         }
 }
 

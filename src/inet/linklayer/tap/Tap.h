@@ -27,8 +27,8 @@
 
 #include <pcap.h>
 #include "inet/common/INETDefs.h"
+#include "inet/common/IInterfaceRegistrationListener.h"
 #include "inet/common/scheduler/RealTimeScheduler.h"
-#include "inet/linklayer/base/MacBase.h"
 
 namespace inet {
 
@@ -44,7 +44,7 @@ class InterfaceEntry;
  *
  * See NED file for more details.
  */
-class INET_API Tap : public MacBase, public RealTimeScheduler::ICallback
+class INET_API Tap : public cSimpleModule, public RealTimeScheduler::ICallback, public IInterfaceRegistrationListener
 {
   protected:
     RealTimeScheduler *rtScheduler = nullptr;
@@ -52,6 +52,7 @@ class INET_API Tap : public MacBase, public RealTimeScheduler::ICallback
     uint8_t buffer[1 << 16];      //TODO allocate buffer related on MTU value
     unsigned long bufferLength = sizeof(buffer);
     std::string device;
+
     MacAddress macAddress;
     Ipv4Address ipv4Address;
     Ipv4Address ipv4Netmask;
@@ -61,19 +62,18 @@ class INET_API Tap : public MacBase, public RealTimeScheduler::ICallback
     int numSent = 0;
     int numRcvd = 0;
     int numDropped = 0;
+    int pkId = 0;
 
     // access to tap interface via Scheduler class:
-    int fd = INVALID_SOCKET;        // tap socket ID
+    int tapFd = INVALID_SOCKET;        // tap socket ID
     int datalink = -1;
+
+    InterfaceEntry *interfaceEntry = nullptr;
 
   protected:
     virtual void refreshDisplay() const override;
 
     // MacBase functions
-    InterfaceEntry *createInterfaceEntry() override;
-    virtual void flushQueue() override;
-    virtual void clearQueue() override;
-    virtual bool isUpperMsg(cMessage *msg) override { return msg->arrivedOn("upperLayerIn"); }
     void initializeAddresses();
     void encapsulate(Packet *frame);
     void decapsulate(Packet *packet);
@@ -83,6 +83,9 @@ class INET_API Tap : public MacBase, public RealTimeScheduler::ICallback
 
     // utility functions
     void sendBytes(unsigned char *buf, size_t numBytes, struct sockaddr *from, socklen_t addrlen);
+
+    // IInterfaceRegistrationListener:
+    virtual void handleRegisterInterface(const InterfaceEntry &interface, cGate *out, cGate *in) override;
 
   public:
     virtual ~Tap();
