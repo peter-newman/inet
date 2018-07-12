@@ -10,9 +10,9 @@ Welcome to INET Framework's documentation!
    :maxdepth: 1
    :caption: Contents:
 
+   users-guide/index
    developers-guide/index
 
-..   users-guide/index
 ..   tutorials/index
 ..   showcases/index
 ..   reference/ned/index

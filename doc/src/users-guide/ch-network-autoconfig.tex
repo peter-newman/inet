@@ -203,7 +203,7 @@ interfaces in the network. The selector attributes limit the scope where
 the interface element has effects. The parameter attributes limit the
 range of assignable addresses and netmasks.
 The \verb!<interface>! element may contain the following attributes:
-\begin{compactitem}
+\begin{itemize}
     \item \ttt{@hosts}
       Optional selector attribute that specifies a list of host name patterns.
       Only interfaces in the specified hosts are affected. The pattern might
@@ -251,13 +251,13 @@ The \verb!<interface>! element may contain the following attributes:
     \item \ttt{@metric}                number
       Optional parameter attribute to set the Metric parameter in the interface.
       When unspecified the interface parameter is left unchanged.
-\end{compactitem}
+\end{itemize}
 
 Wireless interfaces can similarly be configured by adding
 \verb!<wireless>! elements to the configuration. Each \verb!<wireless>!
 element with a different id defines a separate subnet.
 
-\begin{compactitem}
+\begin{itemize}
     \item \ttt{@id} (optional)
       identifies wireless network, unique value used if missed
     \item \ttt{@hosts}
@@ -268,7 +268,7 @@ element with a different id defines a separate subnet.
       Optional selector attribute that specifies a list of interface name
       patterns. Only interfaces with the specified names are affected. The
       default value is "*" that matches all interfaces.
-\end{compactitem}
+\end{itemize}
 
 
 \subsubsection{Multicast groups}
@@ -290,7 +290,7 @@ adds all Ethernet interfaces of nodes whose name starts with ``router''
 to the 224.0.0.5 multicast group.
 
 The \verb!<multicast-group>! element has the following attributes:
-\begin{compactitem}
+\begin{itemize}
     \item \ttt{@hosts}
       Optional selector attribute that specifies a list of host name patterns.
       Only interfaces in the specified hosts are affected. The default value
@@ -313,7 +313,7 @@ The \verb!<multicast-group>! element has the following attributes:
       addresses to be assigned. Values must be selected from the valid range
       of multicast addresses.
       e.g. "224.0.0.1 224.0.1.33"
-\end{compactitem}
+\end{itemize}
 
 
 \subsubsection*{Manual route configuration}
@@ -324,7 +324,7 @@ of the simulation.
 
 The \verb!<route>! elements of the configuration add a route to the
 routing tables of selected nodes. The element has the following attributes:
-\begin{compactitem}
+\begin{itemize}
     \item \ttt{@hosts}
       Optional selector attribute that specifies a list of host name patterns.
       Only routing tables in the specified hosts are affected. The default
@@ -351,11 +351,11 @@ routing tables of selected nodes. The element has the following attributes:
     \item \ttt{@metric}
       Optional parameter attribute that specifies the metric in the route.
       The default value is 0.
-\end{compactitem}
+\end{itemize}
 
 Multicast routing tables can similarly be configured by adding
 \verb!<multicast-route>! elements to the configuration.
-\begin{compactitem}
+\begin{itemize}
     \item \ttt{@hosts}
       Optional selector attribute that specifies a list of host name patterns.
       Only routing tables in the specified hosts are affected.
@@ -381,14 +381,14 @@ Multicast routing tables can similarly be configured by adding
     \item \ttt{@children}
       Mandatory parameter attribute that specifies a list of interface name
       patterns:
-      \begin{compactitem}
+      \begin{itemize}
         \item a name pattern (e.g. "ppp*") matches the name of the interface
         \item a 'towards' pattern (starting with ">", e.g. ">router*") matches the interface
          by naming one of the neighbour nodes on its link.
-      \end{compactitem}
+      \end{itemize}
       Incoming multicast datagrams are forwarded to each child interface except the
       one they arrived in.
-\end{compactitem}
+\end{itemize}
 
 The following example adds an entry to the multicast routing table of \ttt{router1},
 that intsructs the routing algorithm to forward multicast datagrams whose source
@@ -494,7 +494,7 @@ merging similar routes into a single, more general route.)
 
 \begin{warning}
 \nedtype{Ipv4FlatNetworkConfigurator} is considered
-legacy, use do not use it for new projects.
+legacy, do not use it for new projects.
 \end{warning}
 
 The \nedtype{Ipv4FlatNetworkConfigurator} module configures
