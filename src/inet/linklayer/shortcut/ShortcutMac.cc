@@ -25,9 +25,21 @@
 
 namespace inet {
 
-std::map<MacAddress, ShortcutMac *> ShortcutMac::shortcutMacs;
+std::vector<ShortcutMac *> ShortcutMac::shortcutMacs;
 
 Define_Module(ShortcutMac);
+
+ShortcutMac::~ShortcutMac()
+{
+    for (auto it = shortcutMacs.begin(); it != shortcutMacs.end(); ++it) {
+        if (*it == this) {
+            shortcutMacs.erase(it);
+            break;
+        }
+    }
+}
+
+//TODO for LifeCycle, should update the shortcutMacs vector on shutdown/crash/startup cases
 
 void ShortcutMac::initialize(int stage)
 {
@@ -48,6 +60,7 @@ InterfaceEntry *ShortcutMac::createInterfaceEntry()
 {
     auto interfaceEntry = getContainingNicModule(this);
     MacAddress address = parseMacAddressPar(par("address"));
+    shortcutMacs.push_back(this);
     interfaceEntry->setDatarate(bitrate);
     interfaceEntry->setMacAddress(address);
     interfaceEntry->setInterfaceToken(address.formInterfaceIdentifier());
@@ -69,8 +82,8 @@ void ShortcutMac::handleUpperPacket(Packet *packet)
     auto destination = packet->getTag<MacAddressReq>()->getDestAddress();
     if (destination.isBroadcast()) {
         for (auto it : shortcutMacs)
-            if (it.second != this)
-                sendToPeer(packet->dup(), it.second);
+            if (it != this)
+                sendToPeer(packet->dup(), it);
         delete packet;
     }
     else {
@@ -89,11 +102,11 @@ void ShortcutMac::handleLowerPacket(Packet *packet)
 
 ShortcutMac *ShortcutMac::findPeer(MacAddress address)
 {
-    auto it = shortcutMacs.find(address);
-    if (it == shortcutMacs.end())
-        return nullptr;
-    else
-        return it->second;
+    for (auto it : shortcutMacs) {
+        if (it->interfaceEntry->getMacAddress() == address)
+            return it;
+    }
+    return nullptr;
 }
 
 void ShortcutMac::sendToPeer(Packet *packet, ShortcutMac *peer)
