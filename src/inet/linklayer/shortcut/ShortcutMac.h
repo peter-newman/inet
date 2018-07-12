@@ -26,7 +26,7 @@ namespace inet {
 class INET_API ShortcutMac : public MacProtocolBase
 {
   protected:
-    static std::map<MacAddress, ShortcutMac *> shortcutMacs;
+    static std::vector<ShortcutMac *> shortcutMacs;
 
   protected:
     double bitrate = NaN;
@@ -35,6 +35,8 @@ class INET_API ShortcutMac : public MacProtocolBase
     cPar *durationOverhead = nullptr;
     cPar *packetLoss = nullptr;
 
+  public:
+    ~ShortcutMac();
   protected:
     virtual void initialize(int stage) override;
     virtual InterfaceEntry *createInterfaceEntry() override;
