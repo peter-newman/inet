@@ -57,17 +57,11 @@ html : $(ALLTEX) $(SVGPICS) $(HTMLTEMPLATE) $(PREPHTML) $(LTOH) ltoh.specs
 	cp figures/*.png $(HTMLDIR)
 	@if grep 'Unknown LaTeX command' $(DOCNAME).html; then echo 'Error: LaTeX commands missing from ltoh.specs! (see lines above)'; exit 1; fi
 
-rst : $(ALLTEX) $(SVGPICS) $(RSTTEMPLATE) $(PREPHTML) $(LTOH) ltoh.specs
-	CHAPTERS=$$(grep '\include{' $(TEXMAIN) | sed 's/\\include{//;s/}/.tex/' | sed '/^title\.tex/d') && cat $$CHAPTERS > _allinone_.tex
-	$(LTOH) _allinone_.tex
-	$(PREPHTML) --ext rst --split --template $(RSTTEMPLATE) --productversion $(VERSION) --product $(PRODUCT) --title $(TITLE) --outfilenamebase index _allinone_.html
-	rm _allinone_.tex _allinone_.html
-	mkdir -p $(MDDIR)
-	cp *.md lib/* $(MDDIR)
-	cp *.png $(MDDIR)
-	cp figures/*.svg $(MDDIR)
-	cp figures/*.png $(MDDIR)
-	@if grep 'Unknown LaTeX command' *.md; then echo 'Error: LaTeX commands missing from ltoh.specs! (see lines above)'; exit 1; fi
+rst : $(ALLTEX) $(SVGPICS)
+	@../tools/tex2rst ch-introduction.tex
+	@../tools/tex2rst ch-packets.tex
+	@../tools/tex2rst ch-sockets.tex
+	@../tools/tex2rst ch-authors-guide.tex
 
 clean:
 	rm -f $(DOCNAME).dvi $(DOCNAME).pdf $(DOCNAME).html $(DOCNAME).md *.md *.aux *.idx *.ilg *.ind *.log *.out *.toc *.bbl *.blg

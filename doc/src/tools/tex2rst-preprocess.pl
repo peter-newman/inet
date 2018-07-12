@@ -9,3 +9,4 @@ s/\\cppclass\{(.+?)\}/:cppclass:§$1§/g;
 s/\\ffunc\{(.+?)\}/:ffunc:§$1§/g;
 s/\\fvar\{(.+?)\}/:fvar:§$1§/g;
 s/\\protocol\{(.+?)\}/:protocol:§$1§/g;
+s/\\nedtype\{(.+?)\}/:nedtype:§$1§/g;
