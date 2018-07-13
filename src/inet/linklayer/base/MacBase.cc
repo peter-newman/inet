@@ -104,7 +104,8 @@ void MacBase::registerInterface()    //XXX registerInterfaceIfInterfaceTableExis
         interfaceEntry = createInterfaceEntry();
         ift->addInterface(interfaceEntry);
         auto module = getContainingNicModule(this);
-        inet::registerInterface(*interfaceEntry, module->gate("upperLayerIn"), module->gate("upperLayerOut"));
+        if (module->findGate("upperLayerIn") != -1)
+            inet::registerInterface(*interfaceEntry, module->gate("upperLayerIn"), module->gate("upperLayerOut"));
     }
 }
 
