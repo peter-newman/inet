@@ -119,8 +119,7 @@ void MacBase::registerInterface()    //XXX registerInterfaceIfInterfaceTableExis
         ift->addInterface(interfaceEntry);
     }
     auto module = getContainingNicModule(this);
-    if (module->findGate("upperLayerIn") != -1)
-        inet::registerInterface(*interfaceEntry, module->gate("upperLayerIn"), module->gate("upperLayerOut"));
+    inet::registerInterface(*interfaceEntry, module->gate("upperLayerIn"), module->gate("upperLayerOut"));
 }
 
 void MacBase::handleMessageWhenDown(cMessage *msg)
