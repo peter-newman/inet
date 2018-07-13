@@ -15,6 +15,7 @@ PDFDIR=../..
 MDDIR=~/www/inet.omnetpp.org/developers-guide
 
 ALLTEX = $(wildcard *.tex)
+ALLRST = $(ALLTEX:.tex=.rst)
 DOTPICS = $(wildcard figures/*.dot)
 SVGPICS = $(wildcard figures/*.svg) $(DOTPICS:.dot=.svg)
 PDFPICS = $(SVGPICS:.svg=.pdf) $(DOTPICS:.dot=.pdf)
@@ -35,6 +36,9 @@ pdf: $(ALLTEX) $(PDFPICS) figures/*.png
 
 %.svg: %.dot
 	$(DOT) -Tsvg $< >$@
+
+%.rst: %.tex
+	@../tools/tex2rst $<
 
 .SUFFIXES : .svg .dot
 
@@ -57,11 +61,7 @@ html : $(ALLTEX) $(SVGPICS) $(HTMLTEMPLATE) $(PREPHTML) $(LTOH) ltoh.specs
 	cp figures/*.png $(HTMLDIR)
 	@if grep 'Unknown LaTeX command' $(DOCNAME).html; then echo 'Error: LaTeX commands missing from ltoh.specs! (see lines above)'; exit 1; fi
 
-rst : $(ALLTEX) $(SVGPICS)
-	@../tools/tex2rst ch-introduction.tex
-	@../tools/tex2rst ch-packets.tex
-	@../tools/tex2rst ch-sockets.tex
-	@../tools/tex2rst ch-authors-guide.tex
+rst : $(ALLRST) $(SVGPICS)
 
 clean:
 	rm -f $(DOCNAME).dvi $(DOCNAME).pdf $(DOCNAME).html $(DOCNAME).md *.md *.aux *.idx *.ilg *.ind *.log *.out *.toc *.bbl *.blg

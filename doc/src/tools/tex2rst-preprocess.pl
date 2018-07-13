@@ -4,7 +4,10 @@ s/\\end\{verbatim\}/\\end{verbatim}/g;
 s/\\begin\{ned\}/\\begin{verbatim}###ned###/g;
 s/\\end\{ned\}/\\end{verbatim}/g;
 
-s/\\begin\{inifile\}/\\begin{verbatim}###inifile###/g;
+s/\\begin\{cpp\}/\\begin{verbatim}###cpp###/g;
+s/\\end\{cpp\}/\\end{verbatim}/g;
+
+s/\\begin\{inifile\}/\\begin{verbatim}###ini###/g;
 s/\\end\{inifile\}/\\end{verbatim}/g;
 
 s/\\begin\{XML\}/\\begin{verbatim}###XML###/g;
@@ -23,12 +26,12 @@ s/\\begin\{caution\}/\\begin{verbatim}###caution###/g;
 s/\\end\{caution\}/\\end{verbatim}/g;
 
 s/\\ttt\{(.+?)\}/:ttt:§$1§/g;
-s/\\cppclass\{(.+?)\}/:cppclass:§$1§/g;
-s/\\ffunc\{(.+?)\}/:ffunc:§$1§/g;
-s/\\ffilename\{(.+?)\}/:ffilename:§$1§/g;
-s/\\fvar\{(.+?)\}/:fvar:§$1§/g;
-s/\\fpar\{(.+?)\}/:fpar:§$1§/g;
-s/\\fgate\{(.+?)\}/:fgate:§$1§/g;
+s/\\cppclass\{(.+?)\}/:cpp:§$1§/g;
+s/\\ffunc\{(.+?)\}/:func:§$1§/g;
+s/\\ffilename\{(.+?)\}/:filename:§$1§/g;
+s/\\fvar\{(.+?)\}/:var:§$1§/g;
+s/\\fpar\{(.+?)\}/:par:§$1§/g;
+s/\\fgate\{(.+?)\}/:gate:§$1§/g;
 s/\\protocol\{(.+?)\}/:protocol:§$1§/g;
-s/\\nedtype\{(.+?)\}/:nedtype:§$1§/g;
-s/\\msgtype\{(.+?)\}/:msgtype:§$1§/g;
+s/\\nedtype\{(.+?)\}/:ned:§$1§/g;
+s/\\msgtype\{(.+?)\}/:msg:§$1§/g;

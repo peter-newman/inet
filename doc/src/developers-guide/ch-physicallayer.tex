@@ -1,5 +1,3 @@
-\ifdraft TODO
-
 \chapter{The Physical Layer}
 \label{cha:physicallayer}
 
@@ -12,7 +10,7 @@ TODO which modules? C++ interface
 \end{itemize}
 
 \begin{verbatim}
-TODO: 
+TODO:
  - exploit multiple CPUs and the highly parallel GPU to increase performance
  - provide performance vs. accuracy tradeoff configuration options
    (e.g. range filter, radio mode filter, listening mode filter, MAC address filter)
@@ -125,7 +123,7 @@ The physical layer model is scalable along the following axes:
   \item simulation model -- statistical vs accurate
   \item software architecture -- flat vs layered
   \item data representation -- scalar vs multi-dimensional
-  \item number of messages -- TODO 
+  \item number of messages -- TODO
 \end{itemize}
 
 The simulation model might vary from simple statistical models to accurate
@@ -297,7 +295,7 @@ directories.
 The receiver model describes the physical process which converts electric
 signals into packets. In other words, this model converts a reception, along
 with an interference computed by the medium model, into a MAC packet and a
-reception indication. It also determines the following for each transmission: 
+reception indication. It also determines the following for each transmission:
 
 \begin{itemize}
   \item \ttt{is the reception possible or not}: based on the signal
@@ -320,7 +318,7 @@ decoding, and deserialization. This reception model requires much more
 computation, but it produces accurate sample domain, symbol domain, and bit
 domain representations.
 
-The various protocol specific receiver models are in the corresponding 
+The various protocol specific receiver models are in the corresponding
 directories.
 
 \subsection{Transmission Error Modeling}
@@ -328,7 +326,7 @@ directories.
 Determining the reception errors is a crucial part of the reception process.
 There are often several different statistical error models in the literature
 even for a particular physical layer. In order to support this diversity the
-error model is a separate replaceable component of the receiver. 
+error model is a separate replaceable component of the receiver.
 
 The error model describes how the signal to noise ratio affects the amount of
 errors at the receiver. The main purpose of this model is to determine whether
@@ -404,7 +402,7 @@ how transmissions and noises arrive at receivers. It also efficiently provides
 the set of interfering transmissions and noises for the receivers. It doesn't
 send or handle messages on its own, it rather acts as a mediator between radios.
 
-The medium model has a separate chapter devoted to it, see \ref{cha:transmission-medium}. 
+The medium model has a separate chapter devoted to it, see \ref{cha:transmission-medium}.
 
 \section{Signal Representation}
 
@@ -517,8 +515,8 @@ any later processing step.
 
 Thereafter the medium model computes the interference for the reception by
 collecting all interfering receptions and noises. Another signal is considered
-interfering if it owerlaps both in time and frequency domains with respect to 
-the minimum interference parameters. The background noise model also computes a 
+interfering if it owerlaps both in time and frequency domains with respect to
+the minimum interference parameters. The background noise model also computes a
 noise signal that is added to the interference.
 
 The reception process starts in the receiver radio when it receives a message
@@ -532,7 +530,7 @@ Thereafter the receiver model computes the signal to noise and interference
 ratio from the reception and the interference. Using the result, the bitrate,
 and the modulation scheme the error model computes the necessary error rates.
 Alternatively the error model might compute the erroneous bits, or symbols by
-altering the corresponding data of the original transmission. 
+altering the corresponding data of the original transmission.
 
 Thereafter the receiver determines the received MAC packet by either simply
 reusing the original, or actually decoding from the lowest represented domain
@@ -570,7 +568,7 @@ model creates one arrival instance per transmission per receiver.
 This data structure describes the way the receiver radio is listening on the
 medium. The physical layer ignores certain transmissions either during computing
 the interference or even the complete reception of such transmissions. For
-example, a narrowband listening specifies a carrier frequency and a bandwidth. 
+example, a narrowband listening specifies a carrier frequency and a bandwidth.
 
 \subsubsection{Reception}
 
@@ -608,7 +606,7 @@ This data structure describes the physical layer indications such as RSSI, SNIR,
 PER, BER, SER. These physical properties are optional and may be omitted if the
 receiver is configured to do so or if it doesn't support providing the data. The
 reception indication is attached as a control info object to the MAC packet sent
-up from the radio to the MAC module. 
+up from the radio to the MAC module.
 
 \section{Visualization}
 
@@ -626,7 +624,7 @@ The ongoing transmissions can be displayed with 3 dimensional spheres or with 2
 dimensional rings laying in the XY plane. As the signal propagates through space
 the figure grows with it to show where the beginning of the signal is. The inner
 circle of the ring figure shows as the end of the signal propagates through
-space. 
+space.
 
 The recent successful receptions are displayed as straight lines between the
 original positions of the transmission and the reception. The recent obstacle
@@ -646,6 +644,4 @@ TODO: acoustic underwater example
 TODO: wireless vs. wired medium
 
 \section{Use Cases}
-
-\fi
 

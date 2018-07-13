@@ -59,7 +59,7 @@ The configurator goes through the following steps:
 
 \begin{enumerate}
   \item  Builds a graph representing the network topology. The graph
-     will have a vertex for every module that has a @node property (this
+     will have a vertex for every module that has a \ttt{@node} property (this
      includes hosts, routers, and L2 devices like switches, access points,
      Ethernet hubs, etc.) It also assigns weights to vertices and edges that
      will be used by the shortest path algorithm when setting up routes.
@@ -122,14 +122,14 @@ the config file of subsequent runs.
 \subsubsection*{Network topology graph}
 
 The network topology graph is constructed from the nodes
-of the network. The node is a module having a @node property
+of the network. The node is a module having a \ttt{@node} property
 (this includes hosts, routers, and L2 devices like switches,
  access points, Ethernet hubs, etc.). An IP node is a node
 that contains an \nedtype{InterfaceTable} and a \nedtype{Ipv4RoutingTable}.
 A router is an IP node that has multiple network interfaces,
 and IP forwarding is enabled in its routing table module.
 In multicast routers the \fpar{forwardMulticast} parameter
-is also set to \fkeyword{true}.
+is also set to \ttt{true}.
 
 A link is a set of interfaces that can send datagrams to each other
 without intervening routers. Each interface belongs to exactly
@@ -431,12 +431,12 @@ Using manual routes and static route generation
 together may have unwanted side effects, because route generation ignores
 manual routes. Therefore if the configuration file contains
 manual routes, then the \fpar{addStaticRoutes} parameter should be set
-to \fkeyword{false}.
+to \ttt{false}.
 \end{caution}
 
 \subsubsection*{Route optimization}
 
-If the \fpar{optimizeRoutes} parameter is \fkeyword{true} then the
+If the \fpar{optimizeRoutes} parameter is \ttt{true} then the
 configurator tries to optimize the routing table for size.
 This optimization allows configuring larger networks with smaller
 memory footprint and makes the routing table lookup faster.
@@ -627,7 +627,7 @@ Accepted interface fields are:
   \item flags: \ttt{BROADCAST}, \ttt{MULTICAST}, \ttt{POINTTOPOINT}
 \end{itemize}
 
-The following fields are parsed but ignored: \ttt{Bcast},\ttt{encap},
+The following fields are parsed but ignored: \ttt{Bcast}, \ttt{encap},
 \ttt{HWaddr}.
 
 Interface modules set a good default for MTU, Metric (as $2*10^9$/bitrate) and
