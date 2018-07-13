@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -47,11 +48,13 @@
 #include "inet/linklayer/ethernet/EtherEncap.h"
 #include "inet/linklayer/ethernet/EtherFrame_m.h"
 #include "inet/linklayer/ethernet/Ethernet.h"
+#include "inet/linklayer/ethernet/EtherPhyFrame_m.h"
 #include "inet/linklayer/tap/Tap.h"
 
 #include "inet/networklayer/common/InterfaceEntry.h"
 #include "inet/networklayer/common/InterfaceTable.h"
 #include "inet/networklayer/common/IpProtocolId_m.h"
+#include "inet/networklayer/ipv4/Ipv4InterfaceData.h"
 
 namespace inet {
 
@@ -149,6 +152,30 @@ void Tap::initializeMacAddress()
     }
 }
 
+void Tap::initializeIpv4Address()
+{
+    int fd;
+    struct ifreq ifr;
+
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+
+    //Type of address to retrieve - IPv4 IP address
+    ifr.ifr_addr.sa_family = AF_INET;
+
+    //Copy the interface name in the ifreq structure
+    strncpy(ifr.ifr_name , device.c_str() , IFNAMSIZ-1);
+
+    //get the ip address
+    ioctl(fd, SIOCGIFADDR, &ifr);
+    ipv4Address = Ipv4Address(inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+
+    //get the netmask ip
+    ioctl(fd, SIOCGIFNETMASK, &ifr);
+    ipv4Netmask = Ipv4Address(inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+
+    close(fd);
+}
+
 void Tap::initialize(int stage)
 {
     MacBase::initialize(stage);
@@ -173,15 +200,23 @@ void Tap::initialize(int stage)
             connected = false;
         }
 
-        //TODO read real IPv4/IPv6 addresses and MAC address from tap interface and use these values in inet simulation
-
         WATCH(numSent);
         WATCH(numRcvd);
         WATCH(numDropped);
     }
     else if (stage == INITSTAGE_LINK_LAYER) {
+        //TODO read real IPv4/IPv6 addresses and MAC address from tap interface and use these values in inet simulation
         initializeMacAddress();
+        initializeIpv4Address();
         registerInterface();
+        Ipv4InterfaceData *interfaceData = interfaceEntry->ipv4Data();
+        if (interfaceData == nullptr)
+            interfaceEntry->setIpv4Data(interfaceData = new Ipv4InterfaceData());
+        interfaceEntry->setMacAddress(macAddress);
+        interfaceEntry->setMtu(mtu);
+        //interfaceData->setMetric(metric);
+        interfaceData->setIPAddress(Ipv4Address(ipv4Address));
+        interfaceData->setNetmask(Ipv4Address(ipv4Netmask));
     }
 }
 
@@ -198,6 +233,22 @@ InterfaceEntry *Tap::createInterfaceEntry()
     return e;
 }
 
+void Tap::encapsulate(Packet *frame)
+{
+    auto phyHeader = makeShared<EthernetPhyHeader>();
+    phyHeader->setSrcMacFullDuplex(true);
+    frame->insertAtFront(phyHeader);
+    frame->addTagIfAbsent<PacketProtocolTag>()->setProtocol(&Protocol::ethernetPhy);
+}
+
+void Tap::decapsulate(Packet *packet)
+{
+    auto phyHeader = packet->popAtFront<EthernetPhyHeader>();
+    if (phyHeader->getSrcMacFullDuplex() != true)
+        throw cRuntimeError("Ethernet misconfiguration: MACs on the same link must be all in full duplex mode, or all in half-duplex mode");
+    packet->addTagIfAbsent<PacketProtocolTag>()->setProtocol(&Protocol::ethernetMac);
+}
+
 void Tap::handleMessage(cMessage *msg)
 {
     if (!isOperational) {
@@ -205,10 +256,9 @@ void Tap::handleMessage(cMessage *msg)
         return;
     }
 
-    Packet *packet = check_and_cast<Packet *>(msg);
-
     if (msg->isSelfMessage()) {
-        // incoming real packet from wire (captured by tap interface)
+        Packet *packet = check_and_cast<Packet *>(msg);
+        // incoming real packet from real host (captured by tap interface)
         const auto& nwHeader = packet->peekAtFront<EthernetMacHeader>();
         EV << "Delivering a packet from "
            << nwHeader->getSrc()
@@ -217,17 +267,27 @@ void Tap::handleMessage(cMessage *msg)
            << " and length of"
            << packet->getByteLength()
            << " bytes to networklayer.\n";
-        send(packet, "upperLayerOut");
+        encapsulate(packet);
+        auto oldPacketProtocolTag = packet->removeTag<PacketProtocolTag>();
+        packet->clearTags();
+        auto newPacketProtocolTag = packet->addTag<PacketProtocolTag>();
+        *newPacketProtocolTag = *oldPacketProtocolTag;
+        delete oldPacketProtocolTag;
+        auto signal = new EthernetSignal(packet->getName());
+        signal->encapsulate(packet);
+        send(signal, "phys$o");
         numRcvd++;
     }
     else {
-        // incoming packet from upper layer, sending it to tap interface
+        // incoming packet from lower layer, sending it to tap interface
+        auto signal = check_and_cast<EthernetSignal*>(msg);
+        auto packet = check_and_cast<Packet *>(signal->decapsulate());
+        delete signal;
         auto protocol = packet->getTag<PacketProtocolTag>()->getProtocol();
-        if (protocol != &Protocol::ethernetMac)
+        if (protocol != &Protocol::ethernetPhy)
             throw cRuntimeError("ExtInterface accepts ethernet packets only");
-
+        decapsulate(packet);
         const auto& ethHeader = packet->peekAtFront<EthernetMacHeader>();
-
         if (connected) {
             if (fd == INVALID_SOCKET)
                 throw cRuntimeError("Tap: doesn't have socket for tap interface.");

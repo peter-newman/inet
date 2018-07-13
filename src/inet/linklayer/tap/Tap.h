@@ -53,6 +53,9 @@ class INET_API Tap : public MacBase, public RealTimeScheduler::ICallback
     unsigned long bufferLength = sizeof(buffer);
     std::string device;
     MacAddress macAddress;
+    Ipv4Address ipv4Address;
+    Ipv4Address ipv4Netmask;
+    int mtu;
 
     // statistics
     int numSent = 0;
@@ -72,6 +75,9 @@ class INET_API Tap : public MacBase, public RealTimeScheduler::ICallback
     virtual void clearQueue() override;
     virtual bool isUpperMsg(cMessage *msg) override { return msg->arrivedOn("upperLayerIn"); }
     void initializeMacAddress();
+    void initializeIpv4Address();
+    void encapsulate(Packet *frame);
+    void decapsulate(Packet *packet);
 
     // RealTimeScheduler::ICallback:
     virtual bool notify(int fd) override;
