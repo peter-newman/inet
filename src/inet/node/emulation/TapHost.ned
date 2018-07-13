@@ -18,7 +18,9 @@
 package inet.node.emulation;
 
 import inet.linklayer.contract.IEthernetInterface;
+import inet.linklayer.contract.IWirelessInterface;
 import inet.linklayer.tap.TapBridge;
+import inet.mobility.contract.IMobility;
 import inet.networklayer.common.InterfaceTable;
 
 
@@ -28,30 +30,50 @@ import inet.networklayer.common.InterfaceTable;
 module TapHost
 {
     parameters:
-        int numTapInterfaces = default(0);  // minimum number of tap interfaces
+        int numEthInterfaces = default(0);  // minimum number of ethernet interfaces
+        int numWlanInterfaces = default(0);
         @networkNode();
         @labels(node,ethernet-node);
         @display("i=device/pc2");
-        *.interfaceTableModule = default(absPath(".interfaceTable"));
+        mobility.typename = default(numWlanInterfaces > 0 ? "StationaryMobility" : "");
+        mobility.subjectModule = default("^");
         eth[*].encap.typename = "EtherEncapDummy";
+        wlan[*].llc.typename = default("Ieee80211Portal");
+        wlan[*].radio.antenna.mobilityModule = default("^.^.^.mobility");
+        *.interfaceTableModule = default(absPath(".interfaceTable"));
+        *.mobilityModule = default(exists(mobility) ? absPath(".mobility") : "");
     gates:
-        inout ethg[numTapInterfaces] @labels(EtherFrame-conn) @allowUnconnected;
+        inout ethg[numEthInterfaces] @labels(EtherFrame-conn) @allowUnconnected;
+        input radioIn[numWlanInterfaces] @directIn;
     submodules:
         interfaceTable: InterfaceTable {
-            @display("p=76,104;is=s");
+            @display("p=53,73;is=s");
         }
-        tap[sizeof(ethg)]: TapBridge {
-            @display("p=253,104;q=txQueue");
+        tap[sizeof(ethg)+numWlanInterfaces]: TapBridge {
+            @display("p=232,104;q=txQueue");
         }
         eth[sizeof(ethg)]: <default("EthernetInterface")> like IEthernetInterface {
             parameters:
-                @display("p=253,240,row,150;q=txQueue");
+                @display("p=138,234,row,150;q=txQueue");
+        }
+        wlan[numWlanInterfaces]: <default("Ieee80211Interface")> like IWirelessInterface {
+            parameters:
+                @display("p=302,234,row,150;q=queue");
+        }
+        mobility: <default("")> like IMobility if typename != "" {
+            parameters:
+                @display("p=53,162;is=s");
         }
     connections:
         for i=0..sizeof(ethg)-1 {
             tap[i].fromTap --> eth[i].upperLayerIn;
             tap[i].toTap <-- eth[i].upperLayerOut;
-            ethg[i] <--> { @display("m=s"); } <--> eth[i].phys;
+            eth[i].phys <--> { @display("m=s"); } <--> ethg[i];
+        }
+        for i=0..sizeof(radioIn)-1 {
+            tap[sizeof(ethg) + i].fromTap --> wlan[i].upperLayerIn;
+            tap[sizeof(ethg) + i].toTap <-- wlan[i].upperLayerOut;
+            wlan[i].radioIn <-- { @display("m=s"); } <-- radioIn[i];
         }
 }
 
