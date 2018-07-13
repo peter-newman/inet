@@ -20,17 +20,17 @@
 package inet.linklayer.tap;
 
 //
-// Ext interface module implementation.
+// Tap bridge for connect real tap interface to simulation
 //
 // @see ~ExtInterface
 //
-simple Tap
+simple TapBridge
 {
     parameters:
         string device;
         @display("i=block/rxtx");
     gates:
-        input lowerLayerIn @labels(EtherFrame);
-        output lowerLayerOut @labels(EtherFrame);
+        input toTap @labels(EtherFrame);
+        output fromTap @labels(EtherFrame);
 }
 

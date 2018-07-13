@@ -18,7 +18,7 @@
 package inet.node.emulation;
 
 import inet.linklayer.contract.IEthernetInterface;
-import inet.linklayer.tap.Tap;
+import inet.linklayer.tap.TapBridge;
 import inet.networklayer.common.InterfaceTable;
 
 
@@ -40,7 +40,7 @@ module TapHost
         interfaceTable: InterfaceTable {
             @display("p=76,104;is=s");
         }
-        tap[sizeof(ethg)]: Tap {
+        tap[sizeof(ethg)]: TapBridge {
             @display("p=253,104;q=txQueue");
         }
         eth[sizeof(ethg)]: <default("EthernetInterface")> like IEthernetInterface {
@@ -49,8 +49,8 @@ module TapHost
         }
     connections:
         for i=0..sizeof(ethg)-1 {
-            tap[i].lowerLayerOut --> eth[i].upperLayerIn;
-            tap[i].lowerLayerIn <-- eth[i].upperLayerOut;
+            tap[i].fromTap --> eth[i].upperLayerIn;
+            tap[i].toTap <-- eth[i].upperLayerOut;
             ethg[i] <--> { @display("m=s"); } <--> eth[i].phys;
         }
 }

@@ -18,14 +18,13 @@
 
 // This file is based on the Ppp.h of INET written by Andras Varga.
 
-#ifndef __INET_EXT_H
-#define __INET_EXT_H
+#ifndef __INET_TAPBRIDGE_H
+#define __INET_TAPBRIDGE_H
 
 #ifndef MAX_MTU_SIZE
-#define MAX_MTU_SIZE    4000
+#define MAX_MTU_SIZE    4096
 #endif // ifndef MAX_MTU_SIZE
 
-#include <pcap.h>
 #include "inet/common/INETDefs.h"
 #include "inet/common/IInterfaceRegistrationListener.h"
 #include "inet/common/scheduler/RealTimeScheduler.h"
@@ -44,12 +43,12 @@ class InterfaceEntry;
  *
  * See NED file for more details.
  */
-class INET_API Tap : public cSimpleModule, public RealTimeScheduler::ICallback, public IInterfaceRegistrationListener
+class INET_API TapBridge : public cSimpleModule, public RealTimeScheduler::ICallback, public IInterfaceRegistrationListener
 {
   protected:
     RealTimeScheduler *rtScheduler = nullptr;
     bool connected = false;
-    uint8_t buffer[1 << 16];      //TODO allocate buffer related on MTU value
+    uint8_t buffer[MAX_MTU_SIZE + 14 + 4];      //TODO allocate buffer related on MTU value
     unsigned long bufferLength = sizeof(buffer);
     std::string device;
 
@@ -88,15 +87,14 @@ class INET_API Tap : public cSimpleModule, public RealTimeScheduler::ICallback, 
     virtual void handleRegisterInterface(const InterfaceEntry &interface, cGate *out, cGate *in) override;
 
   public:
-    virtual ~Tap();
+    virtual ~TapBridge();
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
     virtual void initialize(int stage) override;
     virtual void handleMessage(cMessage *msg) override;
-
     virtual void finish() override;
 };
 
 } // namespace inet
 
-#endif // ifndef __INET_EXTINTERFACE_H
+#endif // ifndef __INET_TAPBRIDGE_H
 

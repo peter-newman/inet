@@ -1,6 +1,5 @@
 //
-// Copyright (C) 2004 Andras Varga
-// Copyright (C) 2005 Christian Dankbar, Irene Ruengeler, Michael Tuexen
+// Copyright (C) OpenSim Ltd.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -15,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
-
-// This file is based on the Ppp.cc of INET written by Andras Varga.
 
 #define WANT_WINSOCK2
 
@@ -49,7 +46,7 @@
 #include "inet/linklayer/ethernet/EtherFrame_m.h"
 #include "inet/linklayer/ethernet/Ethernet.h"
 #include "inet/linklayer/ethernet/EtherPhyFrame_m.h"
-#include "inet/linklayer/tap/Tap.h"
+#include "inet/linklayer/tap/TapBridge.h"
 
 #include "inet/networklayer/common/InterfaceEntry.h"
 #include "inet/networklayer/common/IpProtocolId_m.h"
@@ -57,7 +54,7 @@
 
 namespace inet {
 
-Define_Module(Tap);
+Define_Module(TapBridge);
 
 int openTap(std::string dev) {
     struct ifreq ifr;
@@ -105,7 +102,7 @@ int openTap(std::string dev) {
     return fd;
 }
 
-bool Tap::notify(int fd)
+bool TapBridge::notify(int fd)
 {
     ASSERT(fd == this->tapFd);
     ssize_t nread = read(fd, buffer, bufferLength);
@@ -131,13 +128,13 @@ bool Tap::notify(int fd)
         return false;
 }
 
-Tap::~Tap()
+TapBridge::~TapBridge()
 {
     rtScheduler->removeCallback(tapFd, this);
     close(tapFd);
 }
 
-void Tap::initializeAddresses()
+void TapBridge::initializeAddresses()
 {
     int fd;
     struct ifreq ifr;
@@ -171,7 +168,7 @@ void Tap::initializeAddresses()
     close(fd);
 }
 
-void Tap::initialize(int stage)
+void TapBridge::initialize(int stage)
 {
     // subscribe at scheduler for external messages
     if (stage == INITSTAGE_LOCAL) {
@@ -202,7 +199,7 @@ void Tap::initialize(int stage)
     }
 }
 
-void Tap::handleRegisterInterface(const InterfaceEntry &interface, cGate *out, cGate *in)
+void TapBridge::handleRegisterInterface(const InterfaceEntry &interface, cGate *out, cGate *in)
 {
     Enter_Method("handleRegisterInterface");
     interfaceEntry = (InterfaceEntry *)&interface;      //FIXME Kludge const cast
@@ -217,7 +214,7 @@ void Tap::handleRegisterInterface(const InterfaceEntry &interface, cGate *out, c
     interfaceData->setNetmask(Ipv4Address(ipv4Netmask));
 }
 
-void Tap::handleMessage(cMessage *msg)
+void TapBridge::handleMessage(cMessage *msg)
 {
     if (msg->isSelfMessage()) {
         Packet *packet = check_and_cast<Packet *>(msg);
@@ -230,7 +227,7 @@ void Tap::handleMessage(cMessage *msg)
            << " and length of"
            << packet->getByteLength()
            << " bytes to networklayer.\n";
-        send(packet, "lowerLayerOut");
+        send(packet, "fromTap");
         numRcvd++;
     }
     else {
@@ -274,7 +271,7 @@ void Tap::handleMessage(cMessage *msg)
     }
 }
 
-void Tap::refreshDisplay() const
+void TapBridge::refreshDisplay() const
 {
     if (connected) {
         char buf[180];
@@ -286,7 +283,7 @@ void Tap::refreshDisplay() const
     }
 }
 
-void Tap::finish()
+void TapBridge::finish()
 {
     rtScheduler->removeCallback(tapFd, this);
     EV << getFullPath() << ": " << numSent << " packets sent, "
