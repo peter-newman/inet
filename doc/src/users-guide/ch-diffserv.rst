@@ -273,18 +273,17 @@ between the minimum and maximum threshold, it will be dropped by a given
 probability. This probability determined by a linear function which is 0
 at the minth and maxp at maxth.
 
-
-
+.. PDF version of image
    \setlength{\unitlength}{1cm}
+   (7,4)(-1,-1) (-0.5,0)(1,0)6.5 (0,-0.5)(0,1)3.5 (5.8,-0.3):math:`qlen`
+   (-0.5,3):math:`p` (1,0)(3,1)3 (4,1)(0,1)1 (4,2)(1,0)1.5
+   (-0.5,1.9):math:`1` (0,2)(0.4,0)10(1,0)0.2 (0,1)(0.4,0)10(1,0)0.2
+   (-1,0.9):math:`p_{max}` (4,0)(0,0.4)3(0,1)0.2 (0.9,-0.3):math:`th_{min}`
+   (3.9,-0.3):math:`th_{max}`
 
-(7,4)(-1,-1) (-0.5,0)(1,0)6.5 (0,-0.5)(0,1)3.5 (5.8,-0.3):math:`qlen`
-(-0.5,3):math:`p` (1,0)(3,1)3 (4,1)(0,1)1 (4,2)(1,0)1.5
-(-0.5,1.9):math:`1` (0,2)(0.4,0)10(1,0)0.2 (0,1)(0.4,0)10(1,0)0.2
-(-1,0.9):math:`p_{max}` (4,0)(0,0.4)3(0,1)0.2 (0.9,-0.3):math:`th_{min}`
-(3.9,-0.3):math:`th_{max}`
-
-<center><img src="red-dropper.png" border="0" width="340"></center> <!–
-screenshot from the PDF version –>
+.. figure:: figures/red-dropper.png
+   :align: center
+   :width: 340
 
 The queue length can be smoothed by specifying the :par:`wq` parameter.
 The average queue length used in the tests are computed by the formula:

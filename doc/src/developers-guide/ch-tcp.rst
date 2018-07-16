@@ -385,7 +385,8 @@ Currently implemented algorithm classes are :cpp:`TcpReno`,
 :cpp:`DumbTcp`. It is also possible to add new TCP variations by
 implementing :cpp:`TcpAlgorithm`.
 
-|image|
+.. image:: figures/tcp_algorithms
+
 
 The concrete TCP algorithm class to use can be chosen per connection (in
 OPEN) or in a module parameter.
@@ -537,5 +538,3 @@ than Reno does.
 It does not exit fast-recovery phase until all data which was
 out-standing at the time it entered fast-recovery is acknowledged. Thus
 avoids reducing the :math:`cwnd` multiple times.
-
-.. |image| image:: figures/tcp_algorithms

@@ -133,7 +133,7 @@ EtherMac
 The operation of the MAC module can be schematized by the following
 state chart:
 
-|image|
+.. image:: figures/EtherMAC_txstates
 
 Unlike :ned:`EtherMacFullDuplex`, this MAC module processes the incoming
 packets when their first bit is received. The end of the reception is
@@ -156,7 +156,7 @@ EtherMacFullDuplex
 Outgoing packets are transmitted according to the following state
 diagram:
 
-|image|
+.. image:: figures/EtherMACFullDuplex_txstates
 
 EthernetInterface
 -----------------
@@ -212,5 +212,3 @@ connect/disconnect a MAC.
 CRC checks are modeled by the :var:`bitError` flag of the packets.
 Erronous packets are dropped by the MAC.
 
-.. |image| image:: figures/EtherMAC_txstates
-.. |image| image:: figures/EtherMACFullDuplex_txstates

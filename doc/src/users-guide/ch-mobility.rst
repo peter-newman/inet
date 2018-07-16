@@ -199,20 +199,19 @@ following figure illustrates the movement of the tractor when the
 ``1,2,3,4,5,6,7,8,1,2,3...`` order. The area is configured by the
 :par:`x1`, :par:`y1`, :par:`x2`, :par:`y2` parameters.
 
-
-
+.. PDF version f image:
    \setlength{\unitlength}{0.5mm}
+   (80,80) (40,72):math:`1` (10,70)(1,0)30 (10,70)(1,0)60 (72,55):math:`2`
+   (70,70)(0,-1)15 (70,70)(0,-1)30 (40,42):math:`3` (70,40)(-1,0)30
+   (70,40)(-1,0)60 (5,25):math:`4` (10,40)(0,-1)15 (10,40)(0,-1)30
+   (40,12):math:`5` (10,10)(1,0)30 (10,10)(1,0)60 (72,25):math:`6`
+   (70,10)(0,1)15 (70,10)(0,1)30 (40, 33)\ :math:`7` (5,55):math:`8`
+   (10,40)(0,1)15 (10,40)(0,1)30 (0,72):math:`(x_1,y_1)`
+   (65,2):math:`(x_2,y_2)`
 
-(80,80) (40,72):math:`1` (10,70)(1,0)30 (10,70)(1,0)60 (72,55):math:`2`
-(70,70)(0,-1)15 (70,70)(0,-1)30 (40,42):math:`3` (70,40)(-1,0)30
-(70,40)(-1,0)60 (5,25):math:`4` (10,40)(0,-1)15 (10,40)(0,-1)30
-(40,12):math:`5` (10,10)(1,0)30 (10,10)(1,0)60 (72,25):math:`6`
-(70,10)(0,1)15 (70,10)(0,1)30 (40, 33)\ :math:`7` (5,55):math:`8`
-(10,40)(0,1)15 (10,40)(0,1)30 (0,72):math:`(x_1,y_1)`
-(65,2):math:`(x_2,y_2)`
-
-<center><img src="tractormobility.png" border="0" width="240"></center>
-<!– screenshot from the PDF version –>
+.. figure:: figures/tractormobility.png
+   :align: center
+   :width: 240
 
 RandomWaypointMobility
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -311,10 +310,6 @@ probability that the state changes from :math:`i` to :math:`j`:
      0.3 & 0 & 0.7
    \end{array}
    \right)
-
-<center> <div> <table class="matrix"> <tr> <td>0</td> <td>0.5</td>
-<td>0.5</td> </tr> <tr> <td>0.3</td> <td>0.7</td> <td>0</td> </tr> <tr>
-<td>0.3</td> <td>0</td> <td>0.7</td> </tr> </table> </div> </center>
 
 .. _sec:mobility:replaying-trace-files:
 

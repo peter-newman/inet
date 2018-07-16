@@ -68,7 +68,6 @@ clean:
 	rm -rf $(HTMLDIR)
 	rm -rf $(MDDIR)
 	rm -rf $(PDFDIR)/$(DOCNAME).pdf
-	rm -f ch-*.rst
 	rm -rf eclipse
 	rm -f figures/*.pdf
 	rm -f `ls figures/*.svg | sed 's/svg$$/png/'`
